@@ -1,6 +1,6 @@
 # WEB-115-Final-Project-Group-5
  
-
+```mermaid
 flowchart TD
     A([START]) --> B[Wake Up in Abandoned City]
     B --> C{Where do you search for supplies?}
@@ -26,7 +26,7 @@ flowchart TD
     O -->|Yes| P[Help Survivor]
     O -->|No| Q[Continue Alone]
 
-    P --> R[Survivor Reveals Haven's Location]
+    P --> R[Survivor Reveals Location of Haven]
     Q --> S[Discover an Old Map to Haven]
 
     M --> T[Travel Toward Haven]
@@ -46,5 +46,4 @@ flowchart TD
     W --> AA{Does Entry Succeed?}
     AA -->|Yes| Z
     AA -->|No| AB([ENDING 3: The Final Journey])
-
-
+```
