@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Survivors</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="game">
+  <div id="bg"></div>
+  <div id="chars"></div>
+  <div id="fade"></div>
+  <div id="box" tabindex="0"><div id="name"></div><div id="text"></div><span id="more">▼</span></div>
+  <div id="choices"></div>
+  <div id="bar"><button id="bSave">Save</button><button id="bMusic">Music: On</button><button id="bHome">Home</button></div>
+  <div id="toast"></div>
+  <div id="end"><h2 id="endT"></h2><p id="endP"></p><button class="btn" id="bAgain">Back to Title</button></div>
+  <div id="title">
+    <h1 id="gTitle"></h1><p id="gSub"></p>
+    <div class="menu"><button class="btn" id="bStart">Start Game</button><button class="btn" id="bLoad">Continue Game</button></div>
+  </div>
+</div>
+ 
+ 
+<!-- story and setting in the order -->
+<script src="story.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
+ 
