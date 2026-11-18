@@ -66,24 +66,26 @@
    }
    
    /* —— page to next page —— */
-   function goScene(id, instant) {
-     const sc = STORY[id];
-     if (!sc) { console.error("Scene not found: " + id); return; }
-     const run = () => {
-       S.scene = id; S.line = 0;
-       if (sc.bg) setBg(sc.bg);
-       if (sc.music) playMusic(sc.music);
-       if (sc.chars) setChars(sc.chars);
-       $("fade").classList.remove("on");
-       showLine();
-     };
-     if (instant) return run();
-     $("fade").classList.add("on");
-     setTimeout(run, 500);
-   }
+function goScene(id, instant) {
+  const sc = STORY[id];
+  if (!sc) { console.error("Scene not found: " + id); return; }
+  const run = () => {
+    S.scene = id; S.line = 0;
+    $("game").classList.toggle("cine", !!sc.cinematic);   // <-- add here
+    if (sc.bg) setBg(sc.bg);
+    if (sc.music) playMusic(sc.music);
+    if (sc.chars) setChars(sc.chars);
+    $("fade").classList.remove("on");
+    showLine();
+  };
+  if (instant) return run();
+  $("fade").classList.add("on");
+  setTimeout(run, 500);
+}
    function showLine() {
      const sc = STORY[S.scene], ln = sc.lines[S.line];
      $("choices").style.display = "none";
+     $("box").classList.remove("choosing");
      if (ln === undefined) return afterLines(sc);
      let who = "", text = ln;
      if (Array.isArray(ln)) {
@@ -116,19 +118,25 @@
    }
    function afterLines(sc) {
      if (sc.ending) return showEnding(sc.ending);
+     if (sc.branch) { const b = sc.branch.find(x => !x.if || x.if(S.vars)); if (b) return goScene(b.goto); }
      if (sc.choices) return showChoices(sc.choices);
      if (sc.next) return goScene(sc.next);
      showEnding("End");
    }
-   function showChoices(list) {
-     const box = $("choices"); box.innerHTML = "";
-     list.filter(c => !c.if || c.if(S.vars)).forEach(c => {
-       const b = document.createElement("button"); b.textContent = c.text;
-       b.onclick = () => { applySet(c.set); box.style.display = "none"; goScene(c.goto); };
-       box.appendChild(b);
-     });
-     box.style.display = "flex"; box.firstChild && box.firstChild.focus();
-   }
+function showChoices(list) {
+  const box = $("choices"); box.innerHTML = "";
+  $("box").classList.add("choosing");
+  list.filter(c => !c.if || c.if(S.vars)).forEach(c => {
+    const b = document.createElement("button"); b.textContent = c.text;
+    b.onclick = e => {
+      e.stopPropagation();
+      applySet(c.set); box.style.display = "none";
+      $("box").classList.remove("choosing"); goScene(c.goto);
+    };
+    box.appendChild(b);
+  });
+  box.style.display = "flex"; box.firstChild && box.firstChild.focus();
+}
    function showEnding(t) {
      highlight(null);
      $("endT").textContent = t;

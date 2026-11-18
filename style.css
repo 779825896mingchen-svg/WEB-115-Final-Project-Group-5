@@ -98,3 +98,13 @@ html,body{height:100%;background:#050806;color:var(--bone);font-family:"Noto Ser
 /* cinematic mode turns the paper off */
 #game.cine #box{padding:0}
 #game.cine #box::before,#game.cine .leaf{display:none}
+
+/* choices live inside the paper box */
+#box #choices{position:static;inset:auto;background:none;padding:0;z-index:2;
+  display:none;flex-direction:column;justify-content:center;align-items:stretch;gap:.5em;min-height:5.1em}
+#box.choosing #text,#box.choosing #more{display:none}
+#box #choices button{width:100%;background:none;color:#17140f;border:none;
+  border-bottom:1px dashed rgba(23,20,15,.4);border-radius:0;
+  padding:.45em .8em;font-size:clamp(15px,2.1vw,26px);text-align:left}
+#box #choices button:hover,#box #choices button:focus-visible{
+  background:var(--inkb);color:#f4f1e8;padding-left:1.4em;border-color:var(--inkb)}

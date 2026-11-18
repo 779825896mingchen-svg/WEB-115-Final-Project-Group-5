@@ -1,74 +1,95 @@
-# WEB-115-Final-Project-Group-5
-# Final Project: Last survivors
+# WEB-115 Final Project – Group 5
+# Survivors: A Choice-Based Story Game
 
 ## Table of Contents
 - [Team Members and Roles](#team-members-and-roles)
 - [Application Overview](#application-overview)
+- [Rules and Navigation](#rules-and-navigation)
 - [Story Flowchart](#story-flowchart)
 
 ## Team Members and Roles
 
 | Team Member | Role | Responsibilities |
 |-------------|------|------------------|
-| Ming Chen | Project Lead | Coordinates meetings, manages repo, final review |
+| Ming Chen | Project Lead | Coordinates meetings, manages the repo, builds the game engine, final review |
 | David Kirby Dean | Story & Gameplay Designer | Writes the narrative, designs decision points |
-| Daniel Santiago Freire Leyton | Documentation Lead | Maintains README |
+| Daniel Santiago Freire Leyton | Documentation Lead | Maintains the README |
 
 ## Application Overview
 
-**The Last survivors** is a text-based choose-your-own-adventure survival game. The player wakes up alone in an abandoned city with no supplies and no memory of how they got there. To survive, they must scavenge for resources, decide how to leave the city, navigate dangerous encounters on the road, and finally attempt to gain entry into **Haven** a rumored survivor settlement.
+**Survivors** is a choice-based, visual-novel-style survival game built with HTML, CSS, and JavaScript.
 
-**Rules & Navigation:**
-- Each screen presents a scene and a set of numbered choices.
-- The player pick of their choice to proceed.
-- Some choices lead to dead ends or alternate endings.
-- The game has three possible endings depending on the player's decisions.
+Three weeks ago a deadly mist rolled down from the hills and turned everyone who breathed it into something no longer human. The player is **David**, one of the few people left in the quiet town of **Mist Creek**. With a bag, a knife, and a rumor on a looping radio broadcast, David sets out for **Haven**, a walled survivor settlement somewhere north of the ridge.
+
+The story is told in three chapters:
+
+1. **Chapter 1: The City.** David leaves his house and chooses to search the hospital or the grocery store. Each location gives a different reward and a different danger, such as a radio transmission about Haven or a hostile scavenger named Asha. David then decides how to leave town.
+2. **Chapter 2: The Road.** On the highway David faces a burned-out roadblock and must sneak around it or confront the people behind it. In the forest he meets an injured survivor and must decide whether to help her or continue alone.
+3. **Chapter 3: Haven.** At the gate David must convince the guards to let him in, either by showing proof of what he carries and knows, or by forcing his way through.
+
+The choices the player makes earlier in the story are tracked in the background (supplies, information, and whether David helped the survivor). These decide whether Haven accepts, tolerates, or rejects him.
+
+### Endings
+
+The game has **three possible endings**:
+
+- **Ending 1: A New Beginning.** David is accepted into Haven.
+- **Ending 2: Survival at a Cost.** David gets in, but only barely and at a price.
+- **Ending 3: The Final Journey.** Haven turns David away and he walks on alone.
+
+## Rules and Navigation
+
+- **Advance the story:** click the text box, or press **Space** or **Enter**. Clicking while text is still typing shows the full line instantly.
+- **Make a choice:** when a decision appears, the options are shown inside the text box at the bottom of the screen. Click one to continue (or use Tab and Enter).
+- **Stats:** gaining or losing supplies or information shows a small pop-up. Totals are displayed on the ending screen.
+- **Save / Continue:** the **Save** button stores your place in the browser. **Continue Game** on the title screen resumes from the last save.
+- **Music:** the **Music** button turns the soundtrack on or off.
+- **Home:** returns to the title screen.
+- Some choices lead to harder endings, so replay the game to see all three.
 
 ## Story Flowchart
+
 ```mermaid
 flowchart TD
-    A([START]) --> B[Wake Up in Abandoned City]
+    A([START: Prologue - the mist comes to Mist Creek]) --> B[David's House]
     B --> C{Where do you search for supplies?}
 
-    C -->|Hospital| D[Search Abandoned Hospital]
-    C -->|Grocery Store| E[Search Grocery Store]
+    C -->|Hospital| D[Hospital Exterior]
+    C -->|Grocery Store| E[Grocery Store Exterior]
 
-    D --> F[Find Medical Supplies and Radio Transmission]
-    E --> G[Find Food and Water]
-    G --> H[Encounter Hostile Scavengers]
+    D --> F["Find medical supplies and a Haven radio broadcast (+1 Info)"]
+    E --> G[Find food and water]
+    G --> H["Hostile scavenger Asha confronts you (+1 Supplies)"]
 
     F --> I{How do you leave the city?}
     H --> I
 
-    I -->|Highway| J[Encounter Dangerous Roadblock]
-    I -->|Forest| K[Discover Injured Survivor]
+    I -->|Highway| J[Burned-out Roadblock]
+    I -->|Forest| K[Injured Survivor in the Woods]
 
     J --> L{How do you handle the roadblock?}
     L -->|Sneak Around| M[Find a Safe Route]
-    L -->|Confront Them| N[Risk Injury and Lose Supplies]
+    L -->|Confront Them| N["Fight and lose supplies (-1 Supplies)"]
 
-    K --> O{Help the Survivor?}
-    O -->|Yes| P[Help Survivor]
-    O -->|No| Q[Continue Alone]
+    K --> O{Help the survivor?}
+    O -->|Yes| P["Survivor reveals Haven's location (+1 Info, gain an ally)"]
+    O -->|No| Q["Find an old map to Haven (+1 Info)"]
 
-    P --> R[Survivor Reveals Location of Haven]
-    Q --> S[Discover an Old Map to Haven]
+    M --> R[Night travel toward Haven]
+    N --> R
+    P --> R
+    Q --> R
 
-    M --> T[Travel Toward Haven]
-    N --> T
-    R --> T
-    S --> T
+    R --> S{How do you approach the gate?}
 
-    T --> U{How do you enter Haven?}
+    S -->|Show Proof| T[Present supplies and information]
+    S -->|Force Entry| U[Attempt to break through the gate]
 
-    U -->|Show Proof| V[Present Supplies or Information]
-    U -->|Force Entry| W[Attempt to Break Through the Gate]
+    T --> V{"Supplies + Info at least 2?"}
+    V -->|Yes| W([ENDING 1: A New Beginning])
+    V -->|No| X([ENDING 2: Survival at a Cost])
 
-    V --> X{Are You Accepted?}
-    X -->|Yes| Y([ENDING 1: A New Beginning])
-    X -->|No| Z([ENDING 2: Survival at a Cost])
-
-    W --> AA{Does Entry Succeed?}
-    AA -->|Yes| Z
-    AA -->|No| AB([ENDING 3: The Final Journey])
+    U --> Y{Do you have an ally?}
+    Y -->|Yes| X
+    Y -->|No| Z([ENDING 3: The Final Journey])
 ```
