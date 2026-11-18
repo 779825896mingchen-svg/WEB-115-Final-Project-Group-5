@@ -11,7 +11,7 @@ const GAME = {
 /* characters and images */
 const CHARS = {
   david: { name: "David", color: "#8a5a4a", glyph: "D",
-           img: { default: "assets/chars/david.jpg", smile: "assets/chars/dog.jpg" } },
+           img: { default: "assets/chars/david.jpg", smile: "assets/chars/david.jpg" } },
   asha:  { name: "Asha",  color: "#4d5d54", glyph: "A",
            img: { default: "assets/chars/dog.jpg" } },
   guard: { name: "Guard", color: "#5a5a4a", glyph: "G",
