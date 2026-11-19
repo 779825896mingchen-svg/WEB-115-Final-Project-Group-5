@@ -11,18 +11,18 @@ const GAME = {
 /* characters and images */
 const CHARS = {
   david: { name: "David", color: "#8a5a4a", glyph: "D",
-           img: { default: "assets/chars/david.jpg", smile: "assets/chars/david.jpg" } },
+           img: { default: "assets/chars/david.png", smile: "assets/chars/david.png" } },
   asha:  { name: "Asha",  color: "#4d5d54", glyph: "A",
-           img: { default: "assets/chars/dog.jpg" } },
+           img: { default: "assets/chars/asha.png" } },
   guard: { name: "Guard", color: "#5a5a4a", glyph: "G",
-           img: { default: "assets/chars/dog.jpg" } }
+           img: { default: "assets/chars/guard.png" } }
 };
 
 /* background images + fallback color if image doesn't load */
 const BG = {
   start:          { file: "assets/background/start.png",          fallback: "linear-gradient(#2b3a35,#0e1411)" },
   town:           { file: "assets/background/town.png",           fallback: "linear-gradient(#2b3a35,#0e1411)" },
-  house:          { file: "assets/background/house.png",          fallback: "linear-gradient(#2b3a35,#0e1411)" },
+  house:          { file: "assets/background/town.png",          fallback: "linear-gradient(#2b3a35,#0e1411)" },
   houseinside:    { file: "assets/background/houseinside.png",    fallback: "linear-gradient(#2b3a35,#0e1411)" },
   hospital:       { file: "assets/background/hospital.png",       fallback: "linear-gradient(#4a2d22,#150d0a)" },
   hospitalinside: { file: "assets/background/hospitalinside.png", fallback: "linear-gradient(#4a2d22,#150d0a)" },
@@ -188,7 +188,7 @@ const STORY = {
 
   // --- Forest ---
   forest: {
-    bg: "forest", chars: [{ id: "asha", pos: "center" }],
+    bg: "forest", chars: [{ id: "asha", pos: "right" }],
     lines: [
       "The forest swallows the road within a hundred paces. Birdsong. Wind. Your own footsteps, too loud.",
       ["asha", "Help — please — I can't — my leg —"],
@@ -200,7 +200,7 @@ const STORY = {
     ]
   },
   forestHelp: {
-    bg: "forest", chars: [{ id: "asha", pos: "center" }],
+    bg: "forest", chars: [{ id: "asha", pos: "right" }],
     lines: [
       ["asha", "Thank you. Thank you — I thought I was going to die out here alone."],
       ["asha", "There's a place north of the ridge. Haven. Walled, guarded, real. Show them you're worth something and they'll take you in."],
