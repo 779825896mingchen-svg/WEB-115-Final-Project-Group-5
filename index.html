@@ -1,31 +1,66 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Survivors</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A choose-your-own-adventure game starter project for WEB-115.">
+  <title>The Last Survivor: Finding Haven</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/game.js" defer></script>
 </head>
 <body>
-<div id="game">
-  <div id="bg"></div>
-  <div id="chars"></div>
-  <div id="fade"></div>
-  <div id="box" tabindex="0"><div id="name"></div><div id="text"></div><span id="more">▼</span><div id="choices"></div></div>
-  <div id="choices"></div>
-  <div id="bar"><button id="bSave">Save</button><button id="bMusic">Music: On</button><button id="bHome">Home</button></div>
-  <div id="toast"></div>
-  <div id="end"><h2 id="endT"></h2><p id="endP"></p><button class="btn" id="bAgain">Back to Title</button></div>
-  <div id="title">
-    <h1 id="gTitle"></h1><p id="gSub"></p>
-    <div class="menu"><button class="btn" id="bStart">Start Game</button><button class="btn" id="bLoad">Continue Game</button></div>
-  </div>
-</div>
- 
- 
-<!-- story and setting in the order -->
-<script src="story.js"></script>
-<script src="game.js"></script>
+  <main class="shell">
+    <header class="header">
+      <div class="header-top">
+        <p class="eyebrow">WEB-115 • Interactive Story</p>
+        <section class="tools" aria-label="Game tools">
+          <div class="tool-buttons">
+            <button id="sound-toggle" class="quiet" type="button">Turn ambience on</button>
+            <button id="save" class="quiet" type="button">Save game</button>
+            <button id="load" class="quiet" type="button">Load game</button>
+          </div>
+          <p id="countdown" class="countdown" role="timer"></p>
+          <p id="sound-notice" class="sound-notice" role="status" aria-live="polite" hidden></p>
+        </section>
+      </div>
+      <h1>The Last Survivor: Finding Haven</h1>
+    </header>
+
+    <section class="status" aria-label="Player status">
+      <div class="stat"><span class="label">Health</span><strong id="health">100</strong></div>
+      <div class="stat"><span class="label">Score</span><strong id="score">0</strong></div>
+      <div class="stat inventory-card"><span class="label">Inventory</span><ul id="inventory"><li>Empty</li></ul></div>
+    </section>
+
+    <p id="notice" class="notice" role="status" aria-live="polite" hidden></p>
+
+    <section class="story" aria-labelledby="title">
+      <p class="scene-kicker" id="scene-kicker">Your journey</p>
+      <h2 id="title">Waking Up</h2>
+      <figure class="scene-art">
+        <img id="scene-image" src="assets/haven-city.jpg" alt="A lone traveler with a backpack looks toward a ruined city." class="scene-image">
+        <figcaption>Artwork from StockCake (CC0).</figcaption>
+      </figure>
+      <p id="story-text" class="story-text">The world as people knew it is gone. Cities have been abandoned, governments have fallen, and the remaining survivors struggle to find food, water, and shelter. You are one of the few people still alive. After months surviving on your own, you wake on the floor of an abandoned apartment building. Dust covers the furniture, the windows are broken, and the streets below are silent.</p>
+      <div id="image-tip" class="image-tip" hidden>Tip: Look closely at the image for clues about this scene.</div>
+      <form id="code-form" class="code-form" hidden>
+        <label for="code-input">Enter the three-digit code from the note:</label>
+        <input id="code-input" inputmode="numeric" autocomplete="off" maxlength="3">
+        <button class="quiet" type="submit">Unlock cabinet</button>
+        <p id="code-message" role="status" aria-live="polite"></p>
+      </form>
+      <p class="keyboard-help">Use the arrow keys to move through choices.</p>
+      <div id="choices" class="choices" aria-label="Story choices"></div>
+    </section>
+
+    <aside class="journal-card" aria-labelledby="journal-title">
+      <h2 id="journal-title">Journal</h2>
+      <div id="journal" aria-live="polite"><p>Your journey notes will appear here.</p></div>
+    </aside>
+
+    <footer class="footer">
+      <button id="restart" class="quiet" type="button">Start over</button>
+    </footer>
+  </main>
 </body>
 </html>
- 

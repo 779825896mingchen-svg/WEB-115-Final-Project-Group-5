@@ -1,95 +1,20 @@
-# WEB-115 Final Project – Group 5
-# Survivors: A Choice-Based Story Game
+# Assets folder
 
-## Table of Contents
-- [Team Members and Roles](#team-members-and-roles)
-- [Application Overview](#application-overview)
-- [Rules and Navigation](#rules-and-navigation)
-- [Story Flowchart](#story-flowchart)
+The game changes the scene image in `game.js`. These StockCake images are AI-generated and offered as CC0/public-domain assets; attribution is optional. Source pages are listed below.
 
-## Team Members and Roles
+| File | Scene | Source |
+| --- | --- | --- |
+| `haven-city.jpg` | Opening | [Post-apocalyptic city explorer](https://stockcake.com/i/post-apocalyptic-city-explorer_1401801_854829) |
+| `hospital.jpg` | Hospital | [Abandoned hospital light](https://stockcake.com/i/abandoned-hospital-light_1605324_1203062) |
+| `grocery.jpg` | Grocery store | [Abandoned grocery store](https://stockcake.com/i/abandoned-grocery-store_339011_609535) |
+| `roadblock.jpg` | Highway roadblock | [Highway accident scene](https://stockcake.com/i/highway-accident-scene_402794_199041) |
+| `survivor.jpg` | Injured survivor | [Mountain emergency call](https://stockcake.com/i/mountain-emergency-call_3847006_972891) |
+| `haven-gate.jpg` | Haven gate | [Container homes survive](https://stockcake.com/i/container-homes-survive_3792687_172821) |
+| `peaceful-entry.jpg` | Peaceful entry | [Starry mountain village](https://stockcake.com/i/starry-mountain-village_1267309_892651) |
+| `force-entry.jpg` | Force-entry attempt | [City road barricades](https://stockcake.com/i/city-road-barricades_862178_218578) |
+| `ending-beginning.jpg` | A New Beginning | [Sunrise over camp](https://stockcake.com/i/sunrise-over-camp_1333212_1017497) |
+| `ending-cost.jpg` | Survival at a Cost | [Family underground shelter](https://stockcake.com/i/family-underground-shelter_1395589_876348) |
+| `ending-journey.jpg` | The Final Journey | [Abandoned urban road](https://stockcake.com/i/abandoned-urban-road_1305231_773219) |
 
-| Team Member | Role | Responsibilities |
-|-------------|------|------------------|
-| Ming Chen | Project Lead | Coordinates meetings, manages the repo, builds the game engine, final review |
-| David Kirby Dean | Story & Gameplay Designer | Writes the narrative, designs decision points |
-| Daniel Santiago Freire Leyton | Documentation Lead | Maintains the README |
+The ambience loop is hosted by [SFXMint](https://sfxmint.com/sounds/city-night-ambience-01) and is offered under CC0. The game plays it when the player turns ambience on.
 
-## Application Overview
-
-**Survivors** is a choice-based, visual-novel-style survival game built with HTML, CSS, and JavaScript.
-
-Three weeks ago a deadly mist rolled down from the hills and turned everyone who breathed it into something no longer human. The player is **David**, one of the few people left in the quiet town of **Mist Creek**. With a bag, a knife, and a rumor on a looping radio broadcast, David sets out for **Haven**, a walled survivor settlement somewhere north of the ridge.
-
-The story is told in three chapters:
-
-1. **Chapter 1: The City.** David leaves his house and chooses to search the hospital or the grocery store. Each location gives a different reward and a different danger, such as a radio transmission about Haven or a hostile scavenger named Asha. David then decides how to leave town.
-2. **Chapter 2: The Road.** On the highway David faces a burned-out roadblock and must sneak around it or confront the people behind it. In the forest he meets an injured survivor and must decide whether to help her or continue alone.
-3. **Chapter 3: Haven.** At the gate David must convince the guards to let him in, either by showing proof of what he carries and knows, or by forcing his way through.
-
-The choices the player makes earlier in the story are tracked in the background (supplies, information, and whether David helped the survivor). These decide whether Haven accepts, tolerates, or rejects him.
-
-### Endings
-
-The game has **three possible endings**:
-
-- **Ending 1: A New Beginning.** David is accepted into Haven.
-- **Ending 2: Survival at a Cost.** David gets in, but only barely and at a price.
-- **Ending 3: The Final Journey.** Haven turns David away and he walks on alone.
-
-## Rules and Navigation
-
-- **Advance the story:** click the text box, or press **Space** or **Enter**. Clicking while text is still typing shows the full line instantly.
-- **Make a choice:** when a decision appears, the options are shown inside the text box at the bottom of the screen. Click one to continue (or use Tab and Enter).
-- **Stats:** gaining or losing supplies or information shows a small pop-up. Totals are displayed on the ending screen.
-- **Save / Continue:** the **Save** button stores your place in the browser. **Continue Game** on the title screen resumes from the last save.
-- **Music:** the **Music** button turns the soundtrack on or off.
-- **Home:** returns to the title screen.
-- Some choices lead to harder endings, so replay the game to see all three.
-
-## Story Flowchart
-
-```mermaid
-flowchart TD
-    A([START: Prologue - the mist comes to Mist Creek]) --> B[David's House]
-    B --> C{Where do you search for supplies?}
-
-    C -->|Hospital| D[Hospital Exterior]
-    C -->|Grocery Store| E[Grocery Store Exterior]
-
-    D --> F["Find medical supplies and a Haven radio broadcast (+1 Info)"]
-    E --> G[Find food and water]
-    G --> H["Hostile scavenger Asha confronts you (+1 Supplies)"]
-
-    F --> I{How do you leave the city?}
-    H --> I
-
-    I -->|Highway| J[Burned-out Roadblock]
-    I -->|Forest| K[Injured Survivor in the Woods]
-
-    J --> L{How do you handle the roadblock?}
-    L -->|Sneak Around| M[Find a Safe Route]
-    L -->|Confront Them| N["Fight and lose supplies (-1 Supplies)"]
-
-    K --> O{Help the survivor?}
-    O -->|Yes| P["Survivor reveals Haven's location (+1 Info, gain an ally)"]
-    O -->|No| Q["Find an old map to Haven (+1 Info)"]
-
-    M --> R[Night travel toward Haven]
-    N --> R
-    P --> R
-    Q --> R
-
-    R --> S{How do you approach the gate?}
-
-    S -->|Show Proof| T[Present supplies and information]
-    S -->|Force Entry| U[Attempt to break through the gate]
-
-    T --> V{"Supplies + Info at least 2?"}
-    V -->|Yes| W([ENDING 1: A New Beginning])
-    V -->|No| X([ENDING 2: Survival at a Cost])
-
-    U --> Y{Do you have an ally?}
-    Y -->|Yes| X
-    Y -->|No| Z([ENDING 3: The Final Journey])
-```
