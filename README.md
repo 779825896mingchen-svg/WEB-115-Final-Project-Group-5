@@ -53,42 +53,36 @@ The game has **three possible endings**:
 flowchart TD
     A([START: Prologue - the mist comes to Mist Creek]) --> B[David's House]
     B --> C{Where do you search for supplies?}
-
     C -->|Hospital| D[Hospital Exterior]
     C -->|Grocery Store| E[Grocery Store Exterior]
-
-    D --> F["Find medical supplies and a Haven radio broadcast (+1 Info)"]
+    D --> F["Find medical supplies and a Haven radio broadcast (+1 Info, Code: HVN-402)"]
     E --> G[Find food and water]
     G --> H["Hostile scavenger Asha confronts you (+1 Supplies)"]
-
     F --> I{How do you leave the city?}
     H --> I
-
     I -->|Highway| J[Burned-out Roadblock]
     I -->|Forest| K[Injured Survivor in the Woods]
-
     J --> L{How do you handle the roadblock?}
     L -->|Sneak Around| M[Find a Safe Route]
     L -->|Confront Them| N["Fight and lose supplies (-1 Supplies)"]
-
     K --> O{Help the survivor?}
     O -->|Yes| P["Survivor reveals Haven's location (+1 Info, gain an ally)"]
     O -->|No| Q["Find an old map to Haven (+1 Info)"]
-
     M --> R[Night travel toward Haven]
     N --> R
     P --> R
     Q --> R
-
-    R --> S{How do you approach the gate?}
-
+    R --> R1[Perimeter Radio Outpost]
+    R1 --> R2{"Enter radio code (HVN-402) before 15s timer runs out?"}
+    R2 -->|Valid Code in Time| R3["Unlock outpost cache (+1 Info, Radio Keycard item)"]
+    R2 -->|Wrong Code / Timeout| R4["Alarm triggers, rush to gate (-1 Supplies)"]
+    R3 --> S{How do you approach the gate?}
+    R4 --> S
     S -->|Show Proof| T[Present supplies and information]
     S -->|Force Entry| U[Attempt to break through the gate]
-
     T --> V{"Supplies + Info at least 2?"}
     V -->|Yes| W([ENDING 1: A New Beginning])
     V -->|No| X([ENDING 2: Survival at a Cost])
-
     U --> Y{Do you have an ally?}
     Y -->|Yes| X
     Y -->|No| Z([ENDING 3: The Final Journey])

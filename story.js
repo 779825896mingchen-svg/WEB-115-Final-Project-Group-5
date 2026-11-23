@@ -104,7 +104,7 @@ const STORY = {
     lines: [
       "The corridors smell of antiseptic and old blood. Gurneys line the walls like abandoned shopping carts.",
       "You find a supply closet — bandages, antiseptic, painkillers. You take what fits in the bag.",
-      "Then a voice. Not live. A radio on the desk, looping: '...Haven is real. North road, past the ridge. Bring proof you can contribute. Haven is real...'"
+      "Then a voice. Not live. A radio on the desk, looping: '...Haven is real. North road, past the ridge. Emergency access code: HVN-402. Haven is real...'"
     ],
     choices: [
       { text: "[ Take the supplies and radio ]", goto: "leaveCity", set: { info: "+1" } }
@@ -229,7 +229,36 @@ const STORY = {
       "By dawn the trees are thinner and the ground runs uphill. You can smell woodsmoke.",
       "Then: a wall. Twelve feet of timber and wire. A gate. A light on top of it, still on."
     ],
+    next: "radioOutpost"
+  },
+
+    radioOutpost: {
+    bg: "haven", chars: [], puzzle: true,
+    lines: [
+      "Before reaching the main wall, you spot a metal perimeter radio outpost humming in the fog.",
+      "A keypad blinks red on the steel door. A faded sticker reads: 'Enter Haven emergency code before patrol sweep.'"
+    ],
     next: "havenGate"
+  },
+  outpostSuccess: {
+    bg: "haven", chars: [],
+    lines: [
+      "The keypad flashes green. Inside the locker you find encrypted patrol logs and a Radio Keycard.",
+      "With this intel, the guards at the main gate won't be able to ignore you."
+    ],
+    choices: [
+      { text: "[ Approach Haven's main gate ]", goto: "havenGate", set: { info: "+1", keycard: true } }
+    ]
+  },
+  outpostFail: {
+    bg: "haven", chars: [],
+    lines: [
+      "A piercing siren blares across the ridge! Searchlights sweep through the mist.",
+      "You scramble away toward the main gate, dropping part of your supplies in the panic."
+    ],
+    choices: [
+      { text: "[ Rush to Haven's main gate ]", goto: "havenGate", set: { supplies: "-1" } }
+    ]
   },
 
   /* ================= CHAPTER 3 : Haven ================= */
