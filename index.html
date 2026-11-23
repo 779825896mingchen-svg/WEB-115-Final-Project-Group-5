@@ -13,6 +13,23 @@
   <div id="fade"></div>
   <div id="box" tabindex="0"><div id="name"></div><div id="text"></div><span id="more">▼</span><div id="choices"></div></div>
   <div id="choices"></div>
+  <img id="story-image" src="assets/background/town.png" alt="Scene preview">
+<div id="img-tooltip" style="display:none;">Hint: Check the radio broadcast for Haven's access code.</div>
+<div id="hud">
+  <span>Supplies: <span id="stat-supplies">0</span></span> |
+  <span>Info: <span id="stat-info">0</span></span>
+  <ul id="inventory-list"></ul>
+</div>
+<div id="story-paragraphs" style="display:none;">
+  <p id="paragraph1"></p>
+  <p id="paragraph2"></p>
+  <p id="paragraph3"></p>
+</div>
+<div id="radio-puzzle" style="display:none;">
+  <p>Perimeter Radio Outpost — Time left: <span id="timer-display">15</span>s</p>
+  <input type="text" id="radio-input" placeholder="Enter code (e.g. HVN-402)">
+  <button id="radio-submit">Unlock</button>
+</div>
   <div id="bar"><button id="bSave">Save</button><button id="bMusic">Music: On</button><button id="bHome">Home</button></div>
   <div id="toast"></div>
   <div id="end"><h2 id="endT"></h2><p id="endP"></p><button class="btn" id="bAgain">Back to Title</button></div>
@@ -21,11 +38,8 @@
     <div class="menu"><button class="btn" id="bStart">Start Game</button><button class="btn" id="bLoad">Continue Game</button></div>
   </div>
 </div>
- 
- 
 <!-- story and setting in the order -->
 <script src="story.js"></script>
 <script src="game.js"></script>
 </body>
 </html>
- 
