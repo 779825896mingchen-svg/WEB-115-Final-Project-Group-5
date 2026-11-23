@@ -117,6 +117,7 @@ function goScene(id, instant) {
      S.line++; showLine();
    }
    function afterLines(sc) {
+     if (sc.puzzle) return startRadioPuzzle();
      if (sc.ending) return showEnding(sc.ending);
      if (sc.branch) { const b = sc.branch.find(x => !x.if || x.if(S.vars)); if (b) return goScene(b.goto); }
      if (sc.choices) return showChoices(sc.choices);
@@ -184,3 +185,114 @@ function showChoices(list) {
    document.addEventListener("keydown", e => {
      if (e.key === " " || e.key === "Enter") { if (document.activeElement.tagName !== "BUTTON") { e.preventDefault(); advance(); } }
    });
+
+/* ===== Rubric Features: 3 Classes, Cookies, RegEx, Timer, Inventory & Hover ===== */
+class PlayerProfile {
+  constructor(name) {
+    this.name = name;
+    this.inventory = ["Survival Knife", "Backpack"];
+  }
+  addItem(item) {
+    if (!this.inventory.includes(item)) this.inventory.push(item);
+    renderInventory();
+  }
+}
+
+class StoryMilestone {
+  constructor(id, title) {
+    this.id = id;
+    this.title = title;
+  }
+}
+
+class SecurityKeypad {
+  constructor(pattern) {
+    this.regex = pattern;
+  }
+  validate(code) {
+    return this.regex.test(code.trim());
+  }
+}
+
+const player = new PlayerProfile("David");
+const keypad = new SecurityKeypad(/^HVN-402$/i);
+let puzzleTimer = null;
+
+function setGameCookie(name, value, days) {
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+}
+
+function renderInventory() {
+  const list = $("inventory-list");
+  if (!list) return;
+  list.innerHTML = "";
+  player.inventory.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = "• " + item;
+    list.appendChild(li);
+  });
+}
+
+function updateHUD() {
+  if ($("stat-supplies")) $("stat-supplies").textContent = S.vars.supplies || 0;
+  if ($("stat-info")) $("stat-info").textContent = S.vars.info || 0;
+  if ($("story-image") && S.bg && BG[S.bg]) $("story-image").src = BG[S.bg].file;
+  if ($("paragraph1")) $("paragraph1").textContent = $("text").textContent;
+  renderInventory();
+}
+
+const origApplySet = applySet;
+applySet = function(set) {
+  origApplySet(set);
+  if (set && set.keycard) player.addItem("Radio Keycard");
+  updateHUD();
+};
+
+const origGoScene = goScene;
+goScene = function(id, instant) {
+  origGoScene(id, instant);
+  setGameCookie("survivors_last_scene", id, 7);
+  setTimeout(updateHUD, 550);
+};
+
+if ($("story-image") && $("img-tooltip")) {
+  $("story-image").addEventListener("mouseover", () => { $("img-tooltip").style.display = "block"; });
+  $("story-image").addEventListener("mouseout", () => { $("img-tooltip").style.display = "none"; });
+}
+
+function startRadioPuzzle() {
+  const box = $("radio-puzzle"), timerEl = $("timer-display"), input = $("radio-input");
+  let timeLeft = 15;
+  input.value = "";
+  timerEl.textContent = timeLeft;
+  box.style.display = "flex";
+  input.focus();
+
+  clearInterval(puzzleTimer);
+  puzzleTimer = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(puzzleTimer);
+      box.style.display = "none";
+      new Audio("assets/music/haven.mp3").play().catch(() => {});
+      goScene("outpostFail");
+    }
+  }, 1000);
+
+  $("radio-submit").onclick = () => {
+    clearInterval(puzzleTimer);
+    box.style.display = "none";
+    const milestone = new StoryMilestone("outpost", "Perimeter Radio");
+    if (keypad.validate(input.value)) {
+      toast("Access Granted: " + milestone.title);
+      goScene("outpostSuccess");
+    } else {
+      toast("Invalid Code!");
+      goScene("outpostFail");
+    }
+  };
+}
+
+renderInventory();
