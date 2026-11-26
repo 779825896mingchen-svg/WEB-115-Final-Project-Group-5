@@ -28,11 +28,15 @@ const BG = {
   houseinside:    { file: "assets/background/houseinside.png",    fallback: "linear-gradient(#2b3a35,#0e1411)" },
   hospital:       { file: "assets/background/hospital.png",       fallback: "linear-gradient(#4a2d22,#150d0a)" },
   hospitalinside: { file: "assets/background/hospitalinside.png", fallback: "linear-gradient(#4a2d22,#150d0a)" },
-  store:          { file: "assets/background/store.png",          fallback: "linear-gradient(#26332f,#070a09 80%)" },
-  storeinside:    { file: "assets/background/storeinside.png",    fallback: "linear-gradient(#26332f,#070a09 80%)" },
+  store:          { file: "assets/background/store_exterior.png",          fallback: "linear-gradient(#26332f,#070a09 80%)" },
+  storeinside:    { file: "assets/background/store_interior.png",    fallback: "linear-gradient(#26332f,#070a09 80%)" },
   forest:         { file: "assets/background/forest.png",         fallback: "linear-gradient(#101a2a,#04070b)" },
   highway:        { file: "assets/background/highway.png",        fallback: "linear-gradient(#3a3a3a,#0c0c0c)" },
-  haven:          { file: "assets/background/haven.png",          fallback: "linear-gradient(#2e3b2a,#0a100a)" }
+  roadchoice:        { file: "assets/background/roadchoice.png",        fallback: "linear-gradient(#3a3a3a,#0c0c0c)" },
+  haven:          { file: "assets/background/haven.png",          fallback: "linear-gradient(#2e3b2a,#0a100a)" },
+  haveninside:          { file: "assets/background/haveninside.png",          fallback: "linear-gradient(#2e3b2a,#0a100a)" },
+  haveninside2:          { file: "assets/background/haveninside2.png",          fallback: "linear-gradient(#2e3b2a,#0a100a)" },
+  havenoutside:          { file: "assets/background/havenoutside.png",          fallback: "linear-gradient(#2e3b2a,#0a100a)" }
 };
 
 /* music */
@@ -242,7 +246,7 @@ const STORY = {
 
   // --- Travel (all paths merge) ---
   toHaven: {
-    bg: "forest", music: "tension", chars: [],
+    bg: "haven", music: "tension", chars: [],
     lines: [
       "You walk through the night. The mist thickens, thins, thickens again. Somewhere behind you a branch breaks. You don't turn around.",
       "By dawn the trees are thinner and the ground runs uphill. You can smell woodsmoke.",
@@ -295,7 +299,7 @@ const STORY = {
 
   /* ================= ENDINGS ================= */
   ending1: {
-    bg: "haven", chars: [],
+    bg: "haveninside", chars: [],
     lines: [
       "The gate swings open. Inside there are gardens — real ones, turned earth and green shoots, a woman teaching a child to hold a hoe.",
       "They give you a bed, a meal, and a job. You sleep fourteen hours and wake to the sound of someone laughing.",
@@ -304,7 +308,7 @@ const STORY = {
     ending: "Ending 1: A New Beginning"
   },
   ending2: {
-    bg: "haven", chars: [],
+    bg: "haveninside3", chars: [],
     lines: [
       "They let you in. They don't let you forget it — the guard's eyes follow you across the yard for a week.",
       "Worst bunk, heaviest shift, smallest ration. It's still a roof. It's still a wall between you and the mist.",
@@ -313,7 +317,7 @@ const STORY = {
     ending: "Ending 2: Survival at a Cost"
   },
   ending3: {
-    bg: "forest", chars: [],
+    bg: "havenoutside", chars: [],
     lines: [
       "The gate doesn't open. The light goes out. The voice on the wall says 'Move along,' and doesn't say it twice.",
       "You walk back into the trees with the last of your water and the taste of copper in your mouth.",
