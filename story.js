@@ -15,7 +15,9 @@ const CHARS = {
   asha:  { name: "Asha",  color: "#4d5d54", glyph: "A",
            img: { default: "assets/chars/asha.png" } },
   guard: { name: "Guard", color: "#5a5a4a", glyph: "G",
-           img: { default: "assets/chars/guard.png" } }
+           img: { default: "assets/chars/guard.png" } },
+  scavenger: { name: "scavenger", color: "#5a4a3a", glyph: "S",
+    img: { default: "assets/chars/scavenger.png" } }
 };
 
 /* background images + fallback color if image doesn't load */
@@ -43,6 +45,14 @@ const MUSIC = {
 /* Stat names shown in the popup / ending screen */
 const STATS = { supplies: "Supplies", info: "Info" };
 
+/* item that show in backpack on the right top corner */
+const ITEMS = {
+  medkit: { name: "Medical Supplies", img: "assets/item/medkit.png", desc: "Bandages and antiseptic." },
+  food:   { name: "Food & Water",     img: "assets/item/food.png",   desc: "Enough for a few days." },
+  radio:  { name: "Radio",            img: "assets/item/radio.png",  desc: "Hand-crank. Repeats the Haven broadcast." },
+  knife:  { name: "Knife",            img: "assets/item/knife.png",  desc: "Old but sharp. Better than empty hands." }
+};
+
 /* ============================================================
    Scene options:
      bg, music, chars, lines, next, ending
@@ -62,9 +72,9 @@ const STORY = {
   prologue: {
     bg: "town", chars: [], cinematic: true, music: "main",
     lines: [
-      "The mist came down off the hills on a Tuesday. By Friday, nothing that breathed it in was still human.",
+      "The mist came down off the hills on one day, and nothing that walked into it came out alive.",
       "Three weeks later, Mist Creek is quiet. Not peaceful. Quiet — the kind that listens back.",
-      "You are David. You have a bag, a knife, and one reason left to keep walking: somewhere past the fog, there's a place called Haven."
+      "You are David. The town is quiet in a way that doesn't feel like sleep. You have no supplies, no answers, and no one to ask."
     ],
     next: "house"
   },
@@ -78,21 +88,28 @@ const STORY = {
     next: "houseinside"
   },
   houseinside: {
-    bg: "houseinside", chars: [{ id: "david", pos: "left" }],
+    bg: "houseinside", chars: [{ id: "david", pos: "left" }], give: ["radio", "knife"],
     lines: [
-      ["david", "Car's dead. Radio's dead. Whole town's dead and nobody told it."],
-      ["david", "I get one trip before dark. One. So where does it go — medicine, or food?"],
+      ["david", "Car's dead. Phone's dead. Whole town's dead and nobody told it."],
+      "In the kitchen drawer, under a pile of dead batteries, he finds a knife. Old, but the edge still holds.",
+      "On the shelf, an old hand-crank radio. He turns the handle without really thinking about it.",
+      "Static. Then, under the hiss, a voice, thin and tired, repeating itself.",
+      "\"...to anyone still out there. There is a settlement. Haven. We have walls, food, and medicine.\"",
+      "\"Come north. Bring what you can carry. Haven is open to anyone who makes it to the gate.\"",
+      ["david", "Haven... So there's somewhere left to go."],
+      ["david", "But I can't walk that far with empty hands. One trip before dark. Medicine, or food?"],
       "Hospital on Fifth, or the market on Main. The choice is small. It won't stay small."
     ],
+    set: { haven: true },
     choices: [
-      { text: "[ Go to the hospital ]",      goto: "hospital" },
-      { text: "[ Go to the grocery store ]", goto: "store" }
+      { text: "[ Go to the hospital ]",      goto: "hospital", set: { supplies: "+1", info: "+1" } },
+      { text: "[ Go to the grocery store ]", goto: "store",    set: { supplies: "+1", info: "+1" } }
     ]
   },
 
   // --- Path A: Hospital ---
   hospital: {
-    bg: "hospital", chars: [{ id: "david", pos: "center", mood: "smile" }],
+    bg: "hospital", chars: [{ id: "david", pos: "center", mood: "smile" }], 
     lines: [
       ["david", "Fifth Street. Still standing. That's more than most of this town can say.", { mood: "smile" }],
       "The doors are jammed half-open. Something inside is humming — a generator, or a machine that doesn't know everyone's dead."
@@ -100,14 +117,14 @@ const STORY = {
     next: "hospitalinside"
   },
   hospitalinside: {
-    bg: "hospitalinside", chars: [],
+    bg: "hospitalinside", chars: [], give: ["medkit"],  
     lines: [
       "The corridors smell of antiseptic and old blood. Gurneys line the walls like abandoned shopping carts.",
       "You find a supply closet — bandages, antiseptic, painkillers. You take what fits in the bag.",
       "Then a voice. Not live. A radio on the desk, looping: '...Haven is real. North road, past the ridge. Bring proof you can contribute. Haven is real...'"
     ],
     choices: [
-      { text: "[ Take the supplies and radio ]", goto: "leaveCity", set: { info: "+1" } }
+      { text: "[ Take the medkit ]", goto: "leaveCity", set: { supplies: "+1" } }
     ]
   },
 
@@ -121,7 +138,7 @@ const STORY = {
     next: "storeinside"
   },
   storeinside: {
-    bg: "storeinside", chars: [],
+    bg: "storeinside", chars: [], 
     lines: [
       "Canned goods. Bottled water. A dented box of matches. You fill the bag until the strap bites your shoulder.",
       "Behind you, a floorboard creaks. You are not the only one who knows about this store."
@@ -129,14 +146,15 @@ const STORY = {
     next: "scavengers"
   },
   scavengers: {
-    bg: "storeinside", chars: [{ id: "asha", pos: "right" }],
+    bg: "storeinside", chars: [{ id: "scavenger", pos: "right" }],
     lines: [
-      "A figure in a hooded coat steps out from behind the last aisle. A length of pipe hangs loose in one hand — casual, the way people hold things they've used before.",
-      ["asha", "That's my store. Everything on those shelves is mine."],
-      ["asha", "You want to walk out of here, you put the bag down. Or you don't walk out."]
+      "A figure in a hooded coat steps out from behind the last aisle. A length of pipe hangs loose in one hand, casual, the way people hold things they've used before.",
+      ["scavenger", "That's my store. Everything on those shelves is mine."],
+      ["scavenger", "You want to walk out of here, you put the bag down. Or you don't walk out."]
     ],
     choices: [
-      { text: "[ Escape with the food ]", goto: "leaveCity", set: { supplies: "+1" } }
+      { text: "[ Escape with the food ]", goto: "leaveCity", give: "food", set: { supplies: "+1" } },
+      { text: "[ Hand over the bag ]",    goto: "leaveCity" }
     ]
   },
 
@@ -165,7 +183,7 @@ const STORY = {
     ],
     choices: [
       { text: "[ Sneak around ]",  goto: "roadSneak" },
-      { text: "[ Confront them ]", goto: "roadFight", set: { supplies: "-1" } }
+      { text: "[ Confront them ]", goto: "roadFight", set: { supplies: "-1" }, take: "knife" }
     ]
   },
   roadSneak: {
@@ -181,6 +199,7 @@ const STORY = {
     lines: [
       ["asha", "You picked the wrong road, friend."],
       "It's over fast and ugly. You get through — but your bag doesn't. Food, matches, half your water, gone in the scuffle.",
+      "Someone wrenches the knife from your belt before you can draw it. You never see it again.",
       "You limp north with a split lip and a lesson: some roads charge a toll."
     ],
     next: "toHaven"
@@ -234,7 +253,7 @@ const STORY = {
 
   /* ================= CHAPTER 3 : Haven ================= */
   havenGate: {
-    bg: "haven", chars: [],
+    bg: "haven", chars: [{ id: "guard", pos: "center" }],
     lines: [
       "A voice comes down from the wall. 'That's far enough. Name and business.'",
       "'Haven doesn't take everyone,' it says. 'Fifty mouths, forty beds. So tell me why you're not just another mouth.'",
@@ -252,7 +271,7 @@ const STORY = {
     lines: [
       ["guard", "Supplies and information, is it? Everyone says that. Show me."],
       ["david", "Medicine. Water. And I know about the north road — the part that moves after dark."],
-      "The gatekeeper is quiet for a long moment. Then the gate begins to move."
+      "The guard is talking to someone through radio for a long moment. Then the gate begins to move."
     ],
     branch: [
       { if: v => (v.supplies || 0) + (v.info || 0) >= 2, goto: "ending1" },

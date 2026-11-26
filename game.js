@@ -1,6 +1,7 @@
    const $ = id => document.getElementById(id);
    let typing = null, fullText = "", musicOn = true, curAudio = null;
-   
+   let S = { scene: null, line: 0, vars: {}, bg: null, music: null, chars: [], log: [], items: [] };
+
    /* —— muisc fade in and out—— */
    function playMusic(name) {
      if (!name || name === S.music) return;
@@ -22,7 +23,71 @@
      $("bMusic").textContent = "Music: " + (musicOn ? "On" : "Off");
      if (curAudio) { musicOn ? curAudio.play().then(() => fadeTo(curAudio, .6)).catch(() => {}) : fadeTo(curAudio, 0, () => curAudio.pause()); }
    };
-   
+
+   /* —— story log + backpack —— */
+function logLine(who, text) {
+  const key = S.scene + ":" + S.line;
+  const last = S.log[S.log.length - 1];
+  if (last && last.key === key) return;            // avoid duplicates after Continue
+  S.log.push({ key, who: who ? CHARS[who].name : "", text });
+}
+   /* adding item to backpack */
+function addItem(id) {
+  if (!id || S.items.includes(id)) return;
+  S.items.push(id);
+  toast("Picked up: " + (ITEMS[id] ? ITEMS[id].name : id));
+}
+function giveAll(g) { [].concat(g || []).forEach(addItem); }
+   /* removing item to backpack */
+function removeItem(id) {
+  const i = S.items.indexOf(id);
+  if (i === -1) return;                       // not in the backpack, do nothing
+  S.items.splice(i, 1);
+  toast("Lost: " + (ITEMS[id] ? ITEMS[id].name : id));
+}
+function takeAll(t) { [].concat(t || []).forEach(removeItem); }
+
+function openPanel(type) {
+  const body = $("panelBody"); body.innerHTML = "";
+  if (type === "log") {
+    $("panelT").textContent = "Story Log";
+    if (!S.log.length) body.innerHTML = '<p class="empty">Nothing yet.</p>';
+    S.log.forEach(e => {
+      const d = document.createElement("div");
+      d.className = "logE" + (e.who ? "" : " narr");
+      if (e.who) { const b = document.createElement("b"); b.textContent = e.who; d.appendChild(b); }
+      const s = document.createElement("span"); s.textContent = e.text; d.appendChild(s);
+      body.appendChild(d);
+    });
+  } else {
+    $("panelT").textContent = "Backpack";
+    if (!S.items.length) body.innerHTML = '<p class="empty">Your backpack is empty.</p>';
+    const g = document.createElement("div"); g.className = "packGrid";
+    S.items.forEach(id => {
+      const it = ITEMS[id] || { name: id, img: "", desc: "" };
+      const s = document.createElement("div"); s.className = "slot";
+      s.innerHTML = '<div class="ic"><img alt=""></div><div class="nm"></div><small></small>';
+      const im = s.querySelector(".ic img");
+      im.src = it.img; im.alt = it.name;
+      s.querySelector(".nm").textContent = it.name;
+      s.querySelector("small").textContent = it.desc;
+      g.appendChild(s);
+    });
+    body.appendChild(g);
+  }
+  $("panel").style.display = "flex";
+  if (type === "log") body.scrollTop = body.scrollHeight;
+}
+
+function closePanel() { $("panel").style.display = "none"; }
+
+$("bLog").onclick = () => openPanel("log");
+$("bPack").onclick = () => openPanel("pack");
+$("panelX").onclick = closePanel;
+$("panel").onclick = e => { if (e.target === $("panel")) closePanel(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape") closePanel(); });
+
+
    /* —— background and charater position —— */
    function setBg(name) {
      if (!name || !BG[name]) return;
@@ -71,7 +136,9 @@ function goScene(id, instant) {
   if (!sc) { console.error("Scene not found: " + id); return; }
   const run = () => {
     S.scene = id; S.line = 0;
-    $("game").classList.toggle("cine", !!sc.cinematic);   // <-- add here
+    giveAll(sc.give); 
+    takeAll(sc.take); 
+    $("game").classList.toggle("cine", !!sc.cinematic);  
     if (sc.bg) setBg(sc.bg);
     if (sc.music) playMusic(sc.music);
     if (sc.chars) setChars(sc.chars);
@@ -95,6 +162,7 @@ function goScene(id, instant) {
      $("name").textContent = who ? CHARS[who].name : "";
      $("text").className = who ? "" : "narr";
      highlight(who);
+     logLine(who, text);  
      typeText(text);
    }
    function typeText(t) {
@@ -111,7 +179,7 @@ function goScene(id, instant) {
      $("text").textContent = fullText; $("more").style.visibility = "visible";
    }
    function advance() {
-     if ($("title").style.display !== "none" || $("end").style.display === "flex") return;
+    if ($("title").style.display !== "none" || $("end").style.display === "flex" || $("panel").style.display === "flex") return;
      if ($("choices").style.display === "flex") return;
      if (typing) return finishTyping();
      S.line++; showLine();
@@ -128,11 +196,7 @@ function showChoices(list) {
   $("box").classList.add("choosing");
   list.filter(c => !c.if || c.if(S.vars)).forEach(c => {
     const b = document.createElement("button"); b.textContent = c.text;
-    b.onclick = e => {
-      e.stopPropagation();
-      applySet(c.set); box.style.display = "none";
-      $("box").classList.remove("choosing"); goScene(c.goto);
-    };
+    b.onclick = () => { applySet(c.set); giveAll(c.give); takeAll(c.take); box.style.display = "none"; goScene(c.goto); };
     box.appendChild(b);
   });
   box.style.display = "flex"; box.firstChild && box.firstChild.focus();
@@ -147,7 +211,7 @@ function showChoices(list) {
    /* —— save game and continue game —— */
    function save() {
      try {
-       localStorage.setItem(GAME.saveKey, JSON.stringify({ scene: S.scene, line: S.line, vars: S.vars, bg: S.bg, music: S.music, chars: S.chars }));
+      localStorage.setItem(GAME.saveKey, JSON.stringify({ scene: S.scene, line: S.line, vars: S.vars, bg: S.bg, music: S.music, chars: S.chars, log: S.log, items: S.items }));
        toast("Saved");
      } catch (e) { toast("Save failed"); }
    }
@@ -155,13 +219,13 @@ function showChoices(list) {
      try { return JSON.parse(localStorage.getItem(GAME.saveKey)); } catch (e) { return null; }
    }
    function startNew() {
-     S = { scene: null, line: 0, vars: {}, bg: null, music: null, chars: [] };
+     S = { scene: null, line: 0, vars: {}, bg: null, music: null, chars: [], log: [], items: [] };
      $("title").style.display = "none"; $("end").style.display = "none";
      goScene(GAME.startScene, true);
    }
    function continueGame() {
      const d = loadSave(); if (!d) return;
-     S = { ...S, ...d, music: null };
+     S = { ...S, ...d, music: null, log: d.log || [], items: d.items || [] };
      $("title").style.display = "none"; $("end").style.display = "none";
      setBg(d.bg); setChars(d.chars || []); playMusic(d.music);
      showLine();
