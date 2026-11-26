@@ -23,8 +23,8 @@ const CHARS = {
 /* background images + fallback color if image doesn't load */
 const BG = {
   start:          { file: "assets/background/start.png",          fallback: "linear-gradient(#2b3a35,#0e1411)" },
-  town:           { file: "assets/background/town.png",           fallback: "linear-gradient(#2b3a35,#0e1411)" },
-  house:          { file: "assets/background/town.png",          fallback: "linear-gradient(#2b3a35,#0e1411)" },
+  town:           { file: "assets/background/townp.png",           fallback: "linear-gradient(#2b3a35,#0e1411)" },
+  house:          { file: "assets/background/house.png",          fallback: "linear-gradient(#2b3a35,#0e1411)" },
   houseinside:    { file: "assets/background/houseinside.png",    fallback: "linear-gradient(#2b3a35,#0e1411)" },
   hospital:       { file: "assets/background/hospital.png",       fallback: "linear-gradient(#4a2d22,#150d0a)" },
   hospitalinside: { file: "assets/background/hospitalinside.png", fallback: "linear-gradient(#4a2d22,#150d0a)" },
