@@ -164,7 +164,7 @@ const STORY = {
 
   // --- How do you leave the city? ---
   leaveCity: {
-    bg: "town", chars: [],
+    bg: "roadchoice", chars: [],
     lines: [
       "The edge of town. The mist thins here, but it never lifts. Two roads go north: the highway, straight and open — and the forest, slow and green.",
       "Open roads get watched. Green roads get lost. Either way, you have until dark."
