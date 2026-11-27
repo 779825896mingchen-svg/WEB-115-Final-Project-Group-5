@@ -1,23 +1,29 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Survivors</title>
+<!-- presentation lives in one stylesheet -->
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<!-- full-screen game stage -->
 <div id="game">
+  <!-- painted scene, standing characters, and the fade between scenes -->
   <div id="bg"></div>
   <div id="chars"></div>
   <div id="fade"></div>
+  <!-- dialogue. Choices are built inside #choices when a decision arrives. -->
   <div id="box" tabindex="0"><div id="name"></div><div id="text"></div><span id="more">▼</span><div id="choices"></div></div>
-  <div id="choices"></div>
+  <!-- save, music, and return to the title -->
   <div id="bar"><button id="bSave">Save</button><button id="bMusic">Music: On</button><button id="bHome">Home</button></div>
+  <!-- opens the story log and the backpack; does not change the scene -->
   <div id="hud">
     <button id="bLog" title="Story Log"><img src="assets/item/storylog.png" alt="Story Log"></button>
     <button id="bPack" title="Backpack"><img src="assets/item/backpack.png" alt="Backpack"></button>
   </div>
+  <!-- log or backpack contents, filled by script -->
   <div id="panel">
     <div id="panelBox">
       <button id="panelX" aria-label="Close">✕</button>
@@ -25,18 +31,26 @@
       <div id="panelBody"></div>
     </div>
   </div>
+  <!-- brief notice, such as a stat change or a failed save -->
   <div id="toast"></div>
+  <!-- label shown on hover; pointer events stay off so it never blocks a click -->
+  <div id="hoverTip" hidden></div>
+  <!-- ending screen, shown only after the story resolves -->
   <div id="end"><h2 id="endT"></h2><p id="endP"></p><button class="btn" id="bAgain">Back to Title</button></div>
+  <!-- title. The name is checked before a new game; Continue skips the check. -->
   <div id="title">
     <h1 id="gTitle"></h1><p id="gSub"></p>
-    <div class="menu"><button class="btn" id="bStart">Start Game</button><button class="btn" id="bLoad">Continue Game</button></div>
+    <form id="nameForm" class="menu" novalidate>
+      <label for="playerName">Traveler name</label>
+      <input id="playerName" name="playerName" type="text" value="" maxlength="20" autocomplete="name">
+      <p id="nameError" role="alert"></p>
+      <button class="btn" id="bStart" type="submit">Start Game</button>
+      <button class="btn" id="bLoad" type="button">Continue Game</button>
+    </form>
   </div>
 </div>
- 
- 
-<!-- story and setting in the order -->
+<!-- story data first, then the engine that reads it -->
 <script src="story.js"></script>
 <script src="game.js"></script>
 </body>
 </html>
- 
