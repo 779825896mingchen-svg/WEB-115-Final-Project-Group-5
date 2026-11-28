@@ -10,14 +10,16 @@ const GAME = {
 
 /* characters and images */
 const CHARS = {
-  david: { name: "${playerName}", color: "#8a5a4a", glyph: "D",
-           img: { default: "assets/chars/david.png", smile: "assets/chars/david.png" } },
+  player: { name: "{playerName}", color: "#8a5a4a", glyph: "D",
+           img: { default: "assets/chars/david.png" } },
   asha:  { name: "Asha",  color: "#4d5d54", glyph: "A",
            img: { default: "assets/chars/asha.png" } },
   guard: { name: "Guard", color: "#5a5a4a", glyph: "G",
            img: { default: "assets/chars/guard.png" } },
   scavenger: { name: "scavenger", color: "#5a4a3a", glyph: "S",
-    img: { default: "assets/chars/scavenger.png" } }
+          img: { default: "assets/chars/scavenger.png" } },
+  raiders: { name: "scavenger", color: "#5a4a3a", glyph: "R",
+          img: { default: "assets/chars/raiders.png" } }
 };
 
 /* background images + fallback color if image doesn't load */
@@ -36,7 +38,8 @@ const BG = {
   haven:          { file: "assets/background/haven.png",          fallback: "linear-gradient(#2e3b2a,#0a100a)" },
   haveninside:          { file: "assets/background/haveninside.png",          fallback: "linear-gradient(#2e3b2a,#0a100a)" },
   haveninside2:          { file: "assets/background/haveninside2.png",          fallback: "linear-gradient(#2e3b2a,#0a100a)" },
-  havenoutside:          { file: "assets/background/havenoutside.png",          fallback: "linear-gradient(#2e3b2a,#0a100a)" }
+  havenoutside:          { file: "assets/background/havenoutside.png",          fallback: "linear-gradient(#2e3b2a,#0a100a)" },
+  roadblockers:          { file: "assets/background/roadblockers.png",          fallback: "linear-gradient(#2e3b2a,#0a100a)" },
 };
 
 /* music */
@@ -50,12 +53,7 @@ const MUSIC = {
 const STATS = { supplies: "Supplies", info: "Info" };
 
 /* item that show in backpack on the right top corner */
-const ITEMS = {
-  medkit: { name: "Medical Supplies", img: "assets/item/medkit.png", desc: "Bandages and antiseptic." },
-  food:   { name: "Food & Water",     img: "assets/item/food.png",   desc: "Enough for a few days." },
-  radio:  { name: "Radio",            img: "assets/item/radio.png",  desc: "Hand-crank. Repeats the Haven broadcast." },
-  knife:  { name: "Knife",            img: "assets/item/knife.png",  desc: "Old but sharp. Better than empty hands." }
-};
+const ITEMS = {};
 
 /* ============================================================
    Scene options:
@@ -78,7 +76,7 @@ const STORY = {
     lines: [
       "The mist came down off the hills on one day, and nothing that walked into it came out alive.",
       "Three weeks later, Mist Creek is quiet. Not peaceful. Quiet — the kind that listens back.",
-      "You are David. The town is quiet in a way that doesn't feel like sleep. You have no supplies, no answers, and no one to ask."
+      "You are player. The town is quiet in a way that doesn't feel like sleep. You have no supplies, no answers, and no one to ask."
     ],
     next: "house"
   },
@@ -92,16 +90,16 @@ const STORY = {
     next: "houseinside"
   },
   houseinside: {
-    bg: "houseinside", chars: [{ id: "david", pos: "left" }], give: ["radio", "knife"],
+    bg: "houseinside", chars: [{ id: "player", pos: "left" }], give: ["radio", "knife"],
     lines: [
-      ["david", "Car's dead. Phone's dead. Whole town's dead and nobody told it."],
+      ["player", "Car's dead. Phone's dead. Whole town's dead and nobody told it."],
       "In the kitchen drawer, under a pile of dead batteries, he finds a knife. Old, but the edge still holds.",
       "On the shelf, an old hand-crank radio. He turns the handle without really thinking about it.",
       "Static. Then, under the hiss, a voice, thin and tired, repeating itself.",
       "\"...to anyone still out there. There is a settlement. Haven. We have walls, food, and medicine.\"",
       "\"Come north. Bring what you can carry. Haven is open to anyone who makes it to the gate.\"",
-      ["david", "Haven... So there's somewhere left to go."],
-      ["david", "But I can't walk that far with empty hands. One trip before dark. Medicine, or food?"],
+      ["player", "Haven... So there's somewhere left to go."],
+      ["player", "But I can't walk that far with empty hands. One trip before dark. Medicine, or food?"],
       "Hospital on Fifth, or the market on Main. The choice is small. It won't stay small."
     ],
     set: { haven: true },
@@ -113,9 +111,9 @@ const STORY = {
 
   // --- Path A: Hospital ---
   hospital: {
-    bg: "hospital", chars: [{ id: "david", pos: "center", mood: "smile" }], 
+    bg: "hospital", chars: [{ id: "player", pos: "center" }], 
     lines: [
-      ["david", "Fifth Street. Still standing. That's more than most of this town can say.", { mood: "smile" }],
+      ["player", "Fifth Street. Still standing. That's more than most of this town can say."],
       "The doors are jammed half-open. Something inside is humming — a generator, or a machine that doesn't know everyone's dead."
     ],
     next: "hospitalinside"
@@ -134,9 +132,9 @@ const STORY = {
 
   // --- Path B: Grocery store ---
   store: {
-    bg: "store", chars: [{ id: "david", pos: "left" }],
+    bg: "store", chars: [{ id: "player", pos: "left" }],
     lines: [
-      ["david", "Main Street Market. Windows are gone. Shelves might not be."],
+      ["player", "Main Street Market. Windows are gone. Shelves might not be."],
       "A shopping cart lies on its side in the doorway. Someone left in a hurry. Someone might still be inside."
     ],
     next: "storeinside"
@@ -199,9 +197,9 @@ const STORY = {
     next: "toHaven"
   },
   roadFight: {
-    bg: "highway", chars: [{ id: "asha", pos: "center" }],
+    bg: "roadblockers", chars: [{ id: "raiders", pos: "center" }],
     lines: [
-      ["asha", "You picked the wrong road, friend."],
+      ["raiders", "You picked the wrong road, friend."],
       "It's over fast and ugly. You get through — but your bag doesn't. Food, matches, half your water, gone in the scuffle.",
       "Someone wrenches the knife from your belt before you can draw it. You never see it again.",
       "You limp north with a split lip and a lesson: some roads charge a toll."
@@ -274,7 +272,7 @@ const STORY = {
     bg: "haven", chars: [{ id: "guard", pos: "center" }],
     lines: [
       ["guard", "Supplies and information, is it? Everyone says that. Show me."],
-      ["david", "Medicine. Water. And I know about the north road — the part that moves after dark."],
+      ["player", "Medicine. Water. And I know about the north road — the part that moves after dark."],
       "The guard is talking to someone through radio for a long moment. Then the gate begins to move."
     ],
     branch: [

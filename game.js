@@ -1,6 +1,6 @@
    const $ = id => document.getElementById(id);
    let typing = null, fullText = "", musicOn = true, curAudio = null;
-   let travelerName = "David";
+   let travelerName = "player";
    let S = { scene: null, line: 0, vars: {}, bg: null, music: null, chars: [], log: [], items: [], playerName: travelerName };
 
    /* fade the old track out and the new scene track in */
@@ -25,13 +25,19 @@
      if (curAudio) { musicOn ? curAudio.play().then(() => fadeTo(curAudio, .6)).catch(() => {}) : fadeTo(curAudio, 0, () => curAudio.pause()); }
    };
 
+   /* replace {playerName} with live values */
+  function resolve(text) {
+    if (!text) return text;
+    return String(text).replace(/\{playerName\}/g, S.playerName || travelerName || "player");
+  }
+
    /* remember a spoken line so the log can reopen it later */
-function logLine(who, text) {
-  const key = S.scene + ":" + S.line;
-  const last = S.log[S.log.length - 1];
-  if (last && last.key === key) return;            // avoid duplicates after Continue
-  S.log.push({ key, who: who ? CHARS[who].name : "", text });
-}
+   function logLine(who, text) {
+    const key = S.scene + ":" + S.line;
+    const last = S.log[S.log.length - 1];
+    if (last && last.key === key) return;
+    S.log.push({ key, who: who ? resolve(CHARS[who].name) : "", text: resolve(text) });
+  }
    /* adding item to backpack */
 function addItem(id) {
   if (!id || S.items.includes(id)) return;
@@ -164,11 +170,11 @@ function goScene(id, instant) {
        who = ln[0]; text = ln[1];
        if (ln[2] && ln[2].mood) swapMood(who, ln[2].mood);
      }
-     $("name").textContent = who ? CHARS[who].name : "";
+     $("name").textContent = who ? resolve(CHARS[who].name) : "";
      $("text").className = who ? "" : "narr";
      highlight(who);
-     logLine(who, text);  
-     typeText(text);
+     logLine(who, text);
+     typeText(resolve(text));
    }
    function typeText(t) {
      clearInterval(typing); fullText = t;
@@ -280,7 +286,7 @@ function showChoices(list) {
    watchHover($("bLog"), "Open the story log");
    watchHover($("bPack"), "Open the backpack");
 
-   /* letters only, so "David" still starts in one click and a blank name does not */
+   /* letters only, so "player" still starts in one click and a blank name does not */
    function nameError(value) {
      const name = value.trim();
      if (!name) return "Enter a name before you start.";
