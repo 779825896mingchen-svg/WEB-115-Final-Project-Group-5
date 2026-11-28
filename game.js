@@ -1,8 +1,9 @@
    const $ = id => document.getElementById(id);
    let typing = null, fullText = "", musicOn = true, curAudio = null;
-   let S = { scene: null, line: 0, vars: {}, bg: null, music: null, chars: [], log: [], items: [] };
+   let travelerName = "player";
+   let S = { scene: null, line: 0, vars: {}, bg: null, music: null, chars: [], log: [], items: [], playerName: travelerName };
 
-   /* —— muisc fade in and out—— */
+   /* fade the old track out and the new scene track in */
    function playMusic(name) {
      if (!name || name === S.music) return;
      S.music = name;
@@ -24,13 +25,19 @@
      if (curAudio) { musicOn ? curAudio.play().then(() => fadeTo(curAudio, .6)).catch(() => {}) : fadeTo(curAudio, 0, () => curAudio.pause()); }
    };
 
-   /* —— story log + backpack —— */
-function logLine(who, text) {
-  const key = S.scene + ":" + S.line;
-  const last = S.log[S.log.length - 1];
-  if (last && last.key === key) return;            // avoid duplicates after Continue
-  S.log.push({ key, who: who ? CHARS[who].name : "", text });
-}
+   /* replace {playerName} with live values */
+  function resolve(text) {
+    if (!text) return text;
+    return String(text).replace(/\{playerName\}/g, S.playerName || travelerName || "player");
+  }
+
+   /* remember a spoken line so the log can reopen it later */
+   function logLine(who, text) {
+    const key = S.scene + ":" + S.line;
+    const last = S.log[S.log.length - 1];
+    if (last && last.key === key) return;
+    S.log.push({ key, who: who ? resolve(CHARS[who].name) : "", text: resolve(text) });
+  }
    /* adding item to backpack */
 function addItem(id) {
   if (!id || S.items.includes(id)) return;
@@ -47,6 +54,7 @@ function removeItem(id) {
 }
 function takeAll(t) { [].concat(t || []).forEach(removeItem); }
 
+/* build the log or backpack panel without changing the current scene */
 function openPanel(type) {
   const body = $("panelBody"); body.innerHTML = "";
   if (type === "log") {
@@ -71,6 +79,8 @@ function openPanel(type) {
       im.src = it.img; im.alt = it.name;
       s.querySelector(".nm").textContent = it.name;
       s.querySelector("small").textContent = it.desc;
+      s.addEventListener("mouseenter", () => showHoverTip(s, it.desc || it.name));
+      s.addEventListener("mouseleave", hideHoverTip);
       g.appendChild(s);
     });
     body.appendChild(g);
@@ -88,7 +98,7 @@ $("panel").onclick = e => { if (e.target === $("panel")) closePanel(); };
 document.addEventListener("keydown", e => { if (e.key === "Escape") closePanel(); });
 
 
-   /* —— background and charater position —— */
+   /* swap the scene image; characters are rebuilt for the new line */
    function setBg(name) {
      if (!name || !BG[name]) return;
      S.bg = name;
@@ -114,7 +124,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") closePanel()
      document.querySelectorAll(".char").forEach(el => el.classList.toggle("dim", !!id && el.dataset.id !== id));
    }
    
-   /* —— 数值 —— */
+   /* apply a choice's stat change; "+1" / "-1" add, anything else is stored as-is */
    function applySet(set) {
      if (!set) return;
      for (const k in set) {
@@ -130,7 +140,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") closePanel()
      clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("on"), 2000);
    }
    
-   /* —— page to next page —— */
+   /* move to a story scene, or fade into it when the player did not just load */
 function goScene(id, instant) {
   const sc = STORY[id];
   if (!sc) { console.error("Scene not found: " + id); return; }
@@ -149,6 +159,7 @@ function goScene(id, instant) {
   $("fade").classList.add("on");
   setTimeout(run, 500);
 }
+   /* show the current line, or hand off to a choice, branch, or ending */
    function showLine() {
      const sc = STORY[S.scene], ln = sc.lines[S.line];
      $("choices").style.display = "none";
@@ -159,11 +170,11 @@ function goScene(id, instant) {
        who = ln[0]; text = ln[1];
        if (ln[2] && ln[2].mood) swapMood(who, ln[2].mood);
      }
-     $("name").textContent = who ? CHARS[who].name : "";
+     $("name").textContent = who ? resolve(CHARS[who].name) : "";
      $("text").className = who ? "" : "narr";
      highlight(who);
-     logLine(who, text);  
-     typeText(text);
+     logLine(who, text);
+     typeText(resolve(text));
    }
    function typeText(t) {
      clearInterval(typing); fullText = t;
@@ -178,6 +189,7 @@ function goScene(id, instant) {
      clearInterval(typing); typing = null;
      $("text").textContent = fullText; $("more").style.visibility = "visible";
    }
+   /* click, Space, or Enter: finish typing, or step to the next line */
    function advance() {
     if ($("title").style.display !== "none" || $("end").style.display === "flex" || $("panel").style.display === "flex") return;
      if ($("choices").style.display === "flex") return;
@@ -191,6 +203,7 @@ function goScene(id, instant) {
      if (sc.next) return goScene(sc.next);
      showEnding("End");
    }
+/* one button per choice that the player's stats allow */
 function showChoices(list) {
   const box = $("choices"); box.innerHTML = "";
   $("box").classList.add("choosing");
@@ -211,7 +224,7 @@ function showChoices(list) {
    /* —— save game and continue game —— */
    function save() {
      try {
-      localStorage.setItem(GAME.saveKey, JSON.stringify({ scene: S.scene, line: S.line, vars: S.vars, bg: S.bg, music: S.music, chars: S.chars, log: S.log, items: S.items }));
+      localStorage.setItem(GAME.saveKey, JSON.stringify({ scene: S.scene, line: S.line, vars: S.vars, bg: S.bg, music: S.music, chars: S.chars, log: S.log, items: S.items, playerName: S.playerName }));
        toast("Saved");
      } catch (e) { toast("Save failed"); }
    }
@@ -219,7 +232,7 @@ function showChoices(list) {
      try { return JSON.parse(localStorage.getItem(GAME.saveKey)); } catch (e) { return null; }
    }
    function startNew() {
-     S = { scene: null, line: 0, vars: {}, bg: null, music: null, chars: [], log: [], items: [] };
+     S = { scene: null, line: 0, vars: {}, bg: null, music: null, chars: [], log: [], items: [], playerName: travelerName };
      $("title").style.display = "none"; $("end").style.display = "none";
      goScene(GAME.startScene, true);
    }
@@ -242,9 +255,65 @@ function showChoices(list) {
    $("gTitle").textContent = GAME.title; $("gSub").textContent = GAME.subtitle;
    $("title").style.setProperty("--tbg", `url("${GAME.titleBg}")`);
    $("bLoad").disabled = !loadSave();
-   $("bStart").onclick = startNew; $("bLoad").onclick = continueGame;
+   $("bLoad").onclick = continueGame;
    $("bSave").onclick = save; $("bHome").onclick = toTitle; $("bAgain").onclick = toTitle;
    $("box").onclick = advance;
    document.addEventListener("keydown", e => {
-     if (e.key === " " || e.key === "Enter") { if (document.activeElement.tagName !== "BUTTON") { e.preventDefault(); advance(); } }
+     const tag = document.activeElement.tagName;
+     if (tag === "INPUT" || tag === "TEXTAREA") return;
+     if (e.key === " " || e.key === "Enter") { if (tag !== "BUTTON") { e.preventDefault(); advance(); } }
    });
+
+   /* hover labels for the log and backpack; they do not advance the story */
+   function showHoverTip(el, text) {
+     const tip = $("hoverTip");
+     if (!tip || !text) return;
+     const r = el.getBoundingClientRect();
+     tip.textContent = text;
+     tip.hidden = false;
+     tip.style.top = (r.bottom + 8) + "px";
+     tip.style.left = Math.max(8, r.left) + "px";
+   }
+   function hideHoverTip() {
+     const tip = $("hoverTip");
+     if (tip) tip.hidden = true;
+   }
+   function watchHover(el, text) {
+     if (!el) return;
+     el.addEventListener("mouseenter", () => showHoverTip(el, text));
+     el.addEventListener("mouseleave", hideHoverTip);
+   }
+   watchHover($("bLog"), "Open the story log");
+   watchHover($("bPack"), "Open the backpack");
+
+   /* letters only, so "player" still starts in one click and a blank name does not */
+   function nameError(value) {
+     const name = value.trim();
+     if (!name) return "Enter a name before you start.";
+     if (name.length > 20) return "Use 20 characters or fewer.";
+     if (!/^[A-Za-z]+(?:[ '\-][A-Za-z]+)*$/.test(name)) return "Use letters only.";
+     return "";
+   }
+   $("nameForm").addEventListener("submit", e => {
+     e.preventDefault();
+     try {
+       const msg = nameError($("playerName").value);
+       $("nameError").textContent = msg;
+       if (msg) { $("playerName").focus(); return; }
+       travelerName = $("playerName").value.trim();
+       startNew();
+     } catch (err) {
+       $("nameError").textContent = "Could not start. Try again.";
+     }
+   });
+
+   /* same item list as story.js; a failed load leaves gameplay on that list */
+   function loadItemCatalog() {
+     try {
+       fetch("items.json")
+         .then(res => { if (!res.ok) throw new Error("items.json missing"); return res.json(); })
+         .then(data => { if (data && typeof data === "object") Object.assign(ITEMS, data); })
+         .catch(() => {});
+     } catch (err) { /* story.js ITEMS stays in use */ }
+   }
+   loadItemCatalog();

@@ -1,0 +1,6 @@
+{
+  "medkit": { "name": "Medical Supplies", "img": "assets/item/medkit.png", "desc": "Bandages and antiseptic." },
+  "food": { "name": "Food & Water", "img": "assets/item/food.png", "desc": "Enough for a few days." },
+  "radio": { "name": "Radio", "img": "assets/item/radio.png", "desc": "Hand-crank. Repeats the Haven broadcast." },
+  "knife": { "name": "Knife", "img": "assets/item/knife.png", "desc": "Old but sharp. Better than empty hands." }
+}
